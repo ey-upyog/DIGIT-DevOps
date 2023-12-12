@@ -1,5 +1,5 @@
 global:
-  domain: <Domain> ## Add your Domain Name Eg: site.mydomain.com
+  domain: jenkins.wontract.com ## Add your Domain Name Eg: site.mydomain.com
   setup: fullsetup
   
 cluster-configs:
@@ -17,41 +17,40 @@ jenkins:
   persistence:
     enabled: true
     aws:
-      - volumeId: "vol-060d0b69accaf9312" # Add volume id for jenkins-home
+      - volumeId: "vol-0dae72bc3dbdb1935" # Add volume id for jenkins-home
         zone: ap-south-1b # Add respective availability_zones 
 
   oauth:
     enabled: true
     acl:
       admin:
-        - egovernments*micro-service-devops # Add github team. Members of this team gets admin access on jenkins
+        - ey-upyog*micro-service-devops # Add github team. Members of this team gets admin access on jenkins
       user:                                 # Add github team. Members of this team gets login access on jenkins
-        - egovernments*micro-service-dev
-        - egovernments*micro-service-qa
-        - egovernments*micro-service-uat
+        - ey-upyog*micro-service-dev
+        - ey-upyog*micro-service-qa
+        - ey-upyog*micro-service-uat
        
-
-  jobBuilder:    # Add jobBuilder repo's, add repo's ssh link
+  jobBuilder:
     repos: >-
-      'git@github.com:egovernments/core-services.git','git@github.com:egovernments/business-services.git'
-  deploymentJobs:  # Setup deploymentJobs ACL 
-    - name: dev    # deployment job name
-      acl: [egovernments*micro-service-dev] # GitHub team name, Members of the team get access to deployment job
-    - name: qa
-      acl: [egovernments*micro-service-qa] 
-    - name: uat
-      acl: [egovernments*micro-service-uat] 
-    
-       
+      'git@github.com:ey-upyog/UPYOG.git'
+  deploymentJobs:
+    - name: dev
+      acl: [eydigit*micro-service-dev]
+    - name: unified-dev
+
+    - name: master
+      acl: [eydigit*micro-service-devops]
+    - name: unified-master
+     
   master:
     ingress:
       enabled: true
     resources:
       limits:
-        cpu: "2000m"
-        memory: "4096Mi"
-    javaOpts: "-Xms2560M -Xmx2560M -Duser.timezone=Asia/Calcutta"
-
+        cpu: "3500m"
+        memory: "7120Mi"
+    javaOpts: "-Xms3100M -Xmx3100M -Duser.timezone=Asia/Calcutta"
+    
 nginx-ingress:
   replicas: 1
   default-backend-service: "jenkins/jenkins"
@@ -70,13 +69,13 @@ cert-manager:
   clusterIssuer:
     stage:
       acme:
-        email: "<mail_id>"     # Add mail id
+        email: "ey.digit@gmail.com"     # Add mail id
 
 cluster-autoscaler:
   namespace: jenkins
   cloudProvider: aws  
   awsRegion: ap-south-1
   autoDiscovery:
-    clusterName: <clusterName> # Add cluster name
+    clusterName: egov-cicd # Add cluster name
     tags:
-    - kubernetes.io/cluster/<clusterName> # Add cluster name
+    - kubernetes.io/cluster/egov-cicd # Add cluster name
